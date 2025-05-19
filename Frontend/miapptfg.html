@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SEGURIDAD PREVENTIVA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .logo { font-family: inherit; font-weight: 700; letter-spacing: -0.1em; }
+  </style>
+</head>
+<body class="bg-white text-black relative">
+
+  <header class="flex items-center justify-between pl-6 pr-12 py-4">
+    <div class="logo text-9xl">SECUR</div>
+    <nav class="space-x-3 text-sm">
+      <a href="vivienda.html" class="hover:underline uppercase tracking-wider">Vivienda</a>
+      <a href="#" onclick="alert('En próximas actualizaciones')" class="hover:underline uppercase tracking-wider">Otros</a>
+    </nav>
+  </header>
+
+  <main class="my-8 w-full px-4 pr-14 relative">
+    <div id="mediaContainer" class="max-w-screen-lg mx-auto relative">
+      
+      <video
+        id="mainMedia"
+        class="w-full h-auto object-cover"
+        controls
+        muted
+        playsinline
+        preload="metadata"
+      >
+        <source src="video1.mp4" type="video/mp4">
+        Tu navegador no soporta vídeos HTML5.
+      </video>
+    </div>
+  </main>
+
+  <button
+    id="prevArrow"
+    aria-label="Anterior"
+    class="absolute left-12 focus:outline-none"
+    style="display: none;"
+    onclick="changeToPrev();"
+  >
+    <!-- SVG igual que antes -->
+  </button>
+
+  <button
+    id="nextArrow"
+    aria-label="Siguiente"
+    class="absolute"
+    style="right: 3rem;"
+    onclick="changeToNext();"
+  >
+    <!-- SVG igual que antes -->
+  </button>
+
+  <div class="max-w-screen-lg mx-auto px-4 mt-1 text-right">
+    <p class="text-sm text-black">Vídeo procesado con YoloV11</p>
+  </div>
+
+  <script>
+    
+    const mediaList = [
+      'video1.mp4',
+      'Video2.mp4'
+    ];
+    let currentIndex = 0;
+
+    const mediaEl = document.getElementById('mainMedia');
+    const prevArrow = document.getElementById('prevArrow');
+
+    function positionArrows() {
+      const rect = mediaEl.getBoundingClientRect();
+      const centerY = rect.top + rect.height / 2;
+      prevArrow.style.top = centerY + 'px';
+      document.getElementById('nextArrow').style.top = centerY + 'px';
+    }
+
+    window.addEventListener('load', positionArrows);
+    window.addEventListener('resize', positionArrows);
+
+    function changeToNext() {
+      currentIndex = (currentIndex + 1) % mediaList.length;
+      mediaEl.src = mediaList[currentIndex];
+      mediaEl.load();
+      mediaEl.play();
+      prevArrow.style.display = currentIndex === 0 ? 'none' : 'block';
+      setTimeout(positionArrows, 100);
+    }
+
+    function changeToPrev() {
+      currentIndex = (currentIndex - 1 + mediaList.length) % mediaList.length;
+      mediaEl.src = mediaList[currentIndex];
+      mediaEl.load();
+      mediaEl.play();
+      prevArrow.style.display = currentIndex === 0 ? 'none' : 'block';
+      setTimeout(positionArrows, 100);
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

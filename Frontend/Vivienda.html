@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SECUR - Vivienda</title>
+
+  
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    
+    .logo {
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: -0.1em; 
+    }
+    /* Justificar texto */
+    .justificado {
+      text-align: justify;
+    }
+  </style>
+</head>
+<body class="bg-white text-black relative">
+  <!-- Encabezado -->
+  <header class="flex items-center justify-between pl-6 pr-12 py-4">
+    <div class="flex items-center space-x-4">
+      <!-- Logo: Al hacer clic vuelve al menú principal (miapptfg.html) -->
+      <a href="miapptfg.html" class="logo text-9xl">
+        SECUR
+      </a>
+    </div>
+    <!-- Opciones en el encabezado -->
+    <nav class="space-x-3 text-sm">
+      <a href="Vivienda.html" class="hover:underline uppercase tracking-wider">
+        Vivienda
+      </a>
+      <a href="#" onclick="alert('En próximas actualizaciones')" class="hover:underline uppercase tracking-wider">
+        Otros
+      </a>
+    </nav>
+  </header>
+
+  <!-- Contenido principal para Vivienda -->
+  <main class="my-8 w-full px-4 pr-14 relative">
+    <div class="max-w-screen-lg mx-auto">
+      <h1 class="text-4xl font-bold mb-4">
+        Detección de comportamientos sospechosos en viviendas
+      </h1>
+      <p class="text-lg mb-6 justificado">
+        La seguridad en el hogar es una prioridad creciente. En este proyecto evaluamos cómo técnicas de inteligencia artificial y visión por computador pueden ayudar a identificar patrones de conducta sospechosos en vídeos residenciales. El sistema analiza las imágenes subidas para detectar y rastrear objetos (personas, teléfonos, vehículos) y activa alertas cuando se cumplen reglas de comportamiento sospechoso, proporcionando una herramienta de apoyo a la vigilancia doméstica.
+      </p>
+      <p class="text-lg justificado">
+        Los usuarios cargan sus propios clips de vídeo y, a través de la interfaz web, pueden visualizar el procesamiento: el modelo detecta objetos con YOLOv11, estima poses, aplica reglas (p.ej. mirada prolongada, estancia excesiva, agacharse) y guarda capturas de los incidentes. Este enfoque complementa los sistemas de seguridad tradicionales, ofreciendo una capa adicional de análisis automático para anticipar riesgos y mejorar la toma de decisiones.
+      </p>
+    </div>
+  </main>
+
+  <!-- Botón para cargar vídeo -->
+  <div class="max-w-screen-lg mx-auto px-4 mt-8 text-center">
+    <a href="analisis.html" class="inline-block border border-gray-400 py-2 px-4 text-sm uppercase tracking-wider hover:bg-gray-100">
+      Cargar Vídeo
+    </a>
+  </div>
+
+  <!-- Pie de página -->
+  <footer class="max-w-screen-lg mx-auto px-4 mt-8 text-right">
+    <p class="text-sm text-black">
+      SECUR - Hacia una seguridad preventiva
+    </p>
+  </footer>
+</body>
+</html>
+
+

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SECUR - Análisis</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;700;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .logo {
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: -0.1em;
+    }
+    .justificado {
+      text-align: justify;
+    }
+  </style>
+</head>
+<body class="bg-white text-black">
+  <!-- Encabezado -->
+  <header class="flex items-center justify-between pl-6 pr-12 py-4">
+    <div class="flex items-center space-x-4">
+      <a href="miapptfg.html" class="logo text-9xl">SECUR</a>
+    </div>
+    <nav class="space-x-3 text-sm">
+      <a href="Vivienda.html" class="hover:underline uppercase tracking-wider">Vivienda</a>
+      <a href="#" onclick="alert('En próximas actualizaciones')" class="hover:underline uppercase tracking-wider">Otros</a>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="my-8 w-full px-4 pr-14">
+    <div class="max-w-screen-lg mx-auto">
+      <h1 class="text-4xl font-bold mb-4">Análisis de Video</h1>
+      <p class="text-lg mb-6 justificado">
+        Carga tu video para que nuestro sistema de inteligencia artificial analice comportamientos sospechosos en entornos residenciales.
+      </p>
+
+      <!-- Formulario para subir video -->
+      <form id="uploadForm" class="mb-4 flex space-x-4">
+        <input type="file" id="videoInput" accept="video/*" class="block w-full border border-gray-300 p-2">
+        <button type="button" id="uploadBtn" class="border border-gray-400 py-2 px-4 text-sm uppercase tracking-wider hover:bg-gray-100">
+          Analizar Video
+        </button>
+        <button type="button" id="reloadBtn" class="border border-gray-400 py-2 px-4 text-sm uppercase tracking-wider hover:bg-gray-100">
+          Cargar Otro Video
+        </button>
+      </form>
+
+      <!-- Barra de Progreso (se muestra solo mientras se procesa el video) -->
+      <div id="progressContainer" class="mb-4" style="display: none;">
+        <p class="mb-2">Progreso del procesamiento:</p>
+        <div class="w-full bg-gray-300 rounded">
+          <div id="progressBar" class="bg-blue-500 text-xs leading-none py-1 text-center text-white rounded" style="width: 0%;">0%</div>
+        </div>
+      </div>
+
+      <!-- Área de reproducción de videos -->
+      <div id="videoContainer" class="relative">
+        <video id="videoOriginal" class="w-full h-auto object-cover" controls style="display: none;"></video>
+        <video id="videoAnalizado" class="w-full h-auto object-cover mt-4" controls style="display: none;"></video>
+      </div>
+
+      <!-- Botones para alternar videos -->
+      <div id="toggleButtons" class="mt-4 text-center" style="display: none;">
+        <button id="btnOriginal" class="border border-gray-400 py-2 px-4 text-sm uppercase tracking-wider hover:bg-gray-100">
+          Ver Video Original
+        </button>
+        <button id="btnAnalizado" class="border border-gray-400 py-2 px-4 text-sm uppercase tracking-wider hover:bg-gray-100 ml-4">
+          Ver Video Analizado
+        </button>
+      </div>
+
+      <!-- Botón y mensaje de resultado -->
+      <div id="resultContainer" class="mt-4 text-center" style="display: none;">
+        <button id="btnResultado" class="border border-gray-400 py-2 px-4 text-sm uppercase tracking-wider hover:bg-gray-100">
+          Ver Resultado
+        </button>
+        <p id="resultadoTexto" class="text-lg font-semibold mt-2" style="display: none;"></p>
+        <ul id="razonTexto" class="text-lg text-red-600 mt-2" style="display: none;"></ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- Pie de página -->
+  <footer class="max-w-screen-lg mx-auto px-4 mt-8 text-right">
+    <p class="text-sm text-black">SECUR - Hacia una seguridad preventiva</p>
+  </footer>
+
+  <script>
+    const videoInput = document.getElementById("videoInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const reloadBtn = document.getElementById("reloadBtn");
+    const videoOriginal = document.getElementById("videoOriginal");
+    const videoAnalizado = document.getElementById("videoAnalizado");
+    const toggleButtons = document.getElementById("toggleButtons");
+    const resultContainer = document.getElementById("resultContainer");
+    const resultadoTexto = document.getElementById("resultadoTexto");
+    const btnResultado = document.getElementById("btnResultado");
+    const razonTexto = document.getElementById("razonTexto");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBar = document.getElementById("progressBar");
+
+    let mensajeResultado = "";
+    let razonesDeteccion = [];
+    let videoAnalizadoURL = "";
+    let videoProcessing = false; // Variable que indica si se está procesando un video
+
+    // Función para actualizar el progreso solo si hay video en procesamiento
+    async function updateProgress() {
+      if (!videoProcessing) return;
+      try {
+        const response = await fetch("http://127.0.0.1:5101/progress");
+        const data = await response.json();
+        const current = data.actual;
+        const total = data.total;
+        const percent = total ? Math.floor((current / total) * 100) : 0;
+        progressBar.style.width = percent + "%";
+        progressBar.textContent = percent + "%";
+      } catch (error) {
+        console.error("Error actualizando el progreso:", error);
+      }
+    }
+    // Polling cada 1 segundo
+    const progressInterval = setInterval(updateProgress, 1000);
+
+    uploadBtn.addEventListener("click", async () => {
+      if (!videoInput.files[0]) {
+        alert("Por favor, selecciona un video primero.");
+        return;
+      }
+      videoProcessing = true; // Inicia el procesamiento
+      progressContainer.style.display = "block";
+
+      const file = videoInput.files[0];
+      const originalURL = URL.createObjectURL(file);
+      videoOriginal.src = originalURL;
+      videoOriginal.style.display = "block";
+      toggleButtons.style.display = "block";
+
+      const formData = new FormData();
+      formData.append("video", file);
+
+      try {
+        const response = await fetch("http://127.0.0.1:5101/procesar_video", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        if (data.video_url) {
+          videoAnalizadoURL = data.video_url + "?t=" + new Date().getTime();
+          mensajeResultado = data.mensaje;
+          razonesDeteccion = data.razones;
+          resultContainer.style.display = "block";
+          resultadoTexto.textContent = "";
+          resultadoTexto.style.display = "none";
+          razonTexto.innerHTML = "";
+          razonTexto.style.display = "none";
+        } else {
+          alert("Error: No se pudo procesar el video analizado.");
+        }
+      } catch (error) {
+        console.error("Error al procesar el video:", error);
+        alert("Error al procesar el video.");
+      } finally {
+        videoProcessing = false; // Finaliza el procesamiento
+      }
+    });
+
+    document.getElementById("btnOriginal").addEventListener("click", () => {
+      videoOriginal.style.display = "block";
+      videoAnalizado.style.display = "none";
+    });
+
+    document.getElementById("btnAnalizado").addEventListener("click", () => {
+      videoAnalizado.src = videoAnalizadoURL;
+      videoAnalizado.load();
+      videoOriginal.style.display = "none";
+      videoAnalizado.style.display = "block";
+    });
+
+    btnResultado.addEventListener("click", () => {
+      resultadoTexto.textContent = mensajeResultado;
+      resultadoTexto.style.display = "block";
+      razonTexto.innerHTML = "";
+      razonesDeteccion.forEach(razon => {
+        const li = document.createElement("li");
+        li.textContent = razon;
+        razonTexto.appendChild(li);
+      });
+      razonTexto.style.display = razonesDeteccion.length > 0 ? "block" : "none";
+    });
+
+    reloadBtn.addEventListener("click", () => {
+      location.reload();
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
