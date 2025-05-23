@@ -40,9 +40,7 @@
 
 				- "mouth.xml"
 
-- "yolo11n.pt"
-- "yolo11n-pose.pt"
-  
+
 
 Cómo usar el sistema
 ---------------------
