@@ -47,7 +47,7 @@
 Cómo usar el sistema
 ---------------------
 
-1. Descarga y descomprime el directorio `/Código/`, asegurándote de mantener la estructura de subcarpetas tal como aparece (Backend, Frontend, Haar Cascade y modelos YOLO).
+1. Descarga y descomprime el directorio, asegurándote de mantener la estructura de subcarpetas tal como aparece (Backend, Frontend, Haar Cascade y modelos YOLO).
 2. Ejecutar "APP.py" (ver más abajo Requisitos).
 3. Ejecutar "análisis.html" y subir un vídeo.
 4. El sistema procesará el vídeo, generará el vídeo procesado y los resultados en la interfaz web.
